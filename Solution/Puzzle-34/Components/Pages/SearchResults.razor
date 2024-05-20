@@ -1,0 +1,38 @@
+﻿@page "/search"
+@inject Repository Repository
+
+<h1>Search</h1>
+<h3>Returning results for @SearchTerm</h3>
+
+@* Output a list of the episodes *@
+@if (Episodes != null)
+{
+	<ul>
+		@foreach (var episode in Episodes)
+		{
+			<li>@episode.Title</li>
+		}
+	</ul>
+}
+else
+{
+	<p>No results found</p>
+}
+
+@code {
+
+	[Parameter, SupplyParameterFromQuery(Name = "t")]
+	public string SearchTerm { get; set; }
+
+	public IEnumerable<Episode> Episodes { get; set; }
+
+	protected override async Task OnParametersSetAsync()
+	{
+
+		Episodes = await Repository.Search(SearchTerm);
+
+		await base.OnParametersSetAsync();
+
+	}
+
+}
